@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import datetime
+
 from peewee import *
 
 db = SqliteDatabase('data.db')
@@ -37,6 +38,7 @@ class Image(Model):
 
 
 class Info(Model):
+    name = CharField()  # 公众号名称的md5
     count = IntegerField(default=0, null=False)  # 文章总数
     pages = IntegerField(default=0, null=False)  # 文章总页数
     grabCount = IntegerField(default=0, null=False)  # 抓取条数

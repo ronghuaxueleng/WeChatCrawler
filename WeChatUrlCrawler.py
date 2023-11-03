@@ -1,11 +1,12 @@
 # -*- coding: UTF-8 -*-
-import os
+import hashlib
 
 import requests
 import time
-import pandas as pd
 import math
 import random
+
+from db import Info, Article
 
 user_agent_list = [
     'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) '
@@ -34,6 +35,7 @@ data = {
     "begin": "0",
     "count": "5",
     "query": "",
+    "need_author_name": "1",
     "fakeid": "MzAwNTc0Mzc2Ng==",
     "type": "9",
 }
@@ -42,21 +44,28 @@ headers = {
     "User-Agent": "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.75 Mobile Safari/537.36",
 
 }
+nickname = '鱼羊史记'
+md = hashlib.md5()
+md.update(nickname.encode('utf-8'))
+wx_name = md.hexdigest()  # 公众号名称
+page_size = 4
 content_json = requests.get(url, headers=headers, params=data).json()
 count = int(content_json["app_msg_cnt"])
-print(f"文章总条数：{count}")
-page = int(math.ceil(count / 5))
-print(f"文章总页数：{page}")
+print(f"公众号文章总条数：{count}")
+page = int(math.ceil(count / page_size))
+print(f"公众号文章总页数：{page}")
 content_list = []
-# 功能：爬取IP存入ip_list列表
+if count > 0:
+    info_exists = Info.select().where(Info.name == wx_name).exists()
+    if not info_exists:
+        info_data = {}
+        info_data['name'] = md.hexdigest()
+        info_data['count'] = count
+        info_data['pages'] = page
+        Info.insert(info_data).execute()
 
-url_file = "url.csv"
-name = ['title', 'link', 'create_time']
 
-
-def get_one_page_urls(begin, content_list=None):
-    if content_list is None:
-        content_list = []
+def get_one_page_urls(begin):
     data["begin"] = begin
     user_agent = random.choice(user_agent_list)
     headers = {
@@ -64,33 +73,31 @@ def get_one_page_urls(begin, content_list=None):
         "User-Agent": user_agent,
 
     }
-    ip_headers = {
-        'User-Agent': user_agent
-    }
     try:
         # 使用get方法进行提交
         content_json = requests.get(url, headers=headers, params=data).json()
         # 返回了一个json，里面是每一页的数据
         for item in content_json["app_msg_list"]:
-            # 提取每页文章的标题及对应的url
-            items = []
-            items.append(item["title"])
-            items.append(item["link"])
-            t = time.localtime(item["create_time"])
-            items.append(time.strftime("%Y-%m-%d %H:%M:%S", t))
-            content_list.append(items)
+            try:
+                # 提取每页文章的标题及对应的url
+                postId = hashlib.md5()
+                postId.update(item["link"].encode('utf-8'))
+                article_data = {}
+                article_data['postId'] = postId.hexdigest()
+                article_data['nickname'] = nickname
+                article_data['title'] = item["title"]
+                article_data['url'] = item["link"]
+                Article.insert(article_data).execute()
+            except Exception as e:
+                print(e)
+
         print(f"第{i}页爬取完成")
         if (i > 0) and (i % 10 == 0):
-            test = pd.DataFrame(columns=name, data=content_list)
-            test.to_csv(url_file, mode='a', encoding='utf-8', index=False, index_label=False,
-                        header=(not os.path.exists(url_file)))
-            print("第" + str(i) + "次保存成功")
-            content_list = []
             sleep_seconds = random.randint(60, 90)
             print(f"等待{sleep_seconds}秒")
             time.sleep(sleep_seconds)
         else:
-            sleep_seconds = random.randint(15, 25)
+            sleep_seconds = random.randint(25, 35)
             print(f"等待{sleep_seconds}秒")
             time.sleep(sleep_seconds)
     except Exception as e:
@@ -99,8 +106,6 @@ def get_one_page_urls(begin, content_list=None):
 
 
 for i in range(page):
-    get_one_page_urls(i * 5, content_list)
-
-test = pd.DataFrame(columns=name, data=content_list)
-test.to_csv("url.csv", mode='a', encoding='utf-8')
-print("最后一次保存成功")
+    begin = i * page_size
+    get_one_page_urls(begin)
+    Info.update(grabCount=begin + page_size).where(Info.name == wx_name).execute()
