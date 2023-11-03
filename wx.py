@@ -60,7 +60,7 @@ def save_image(image_src):
 if __name__ == '__main__':
     # save_image_urls()
     with open('data.json', 'r', encoding='UTF-8') as f:
-        os.mkdir('img')
+        os.makedirs('img', exist_ok=True)
         data_list = json.load(f)
         for image_src in data_list:
             save_image(image_src)
