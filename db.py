@@ -37,23 +37,13 @@ class Image(Model):
         database = db
 
 
-class Info(Model):
-    name = CharField()  # 公众号名称的md5
-    count = IntegerField(default=0, null=False)  # 文章总数
-    pages = IntegerField(default=0, null=False)  # 文章总页数
-    grabCount = IntegerField(default=0, null=False)  # 抓取条数
-
-    class Meta:
-        database = db
-
-
 def delete_table():
     return Article.delete().execute()
 
 
 def init_table():
     db.connect()
-    db.create_tables([Article, Image, Info])
+    db.create_tables([Article, Image])
 
 
 if __name__ == '__main__':

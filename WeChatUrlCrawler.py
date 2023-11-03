@@ -6,7 +6,7 @@ import time
 import math
 import random
 
-from db import Info, Article
+from db import Article
 
 user_agent_list = [
     'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) '
@@ -54,15 +54,6 @@ count = int(content_json["app_msg_cnt"])
 print(f"公众号文章总条数：{count}")
 page = int(math.ceil(count / page_size))
 print(f"公众号文章总页数：{page}")
-content_list = []
-if count > 0:
-    info_exists = Info.select().where(Info.name == wx_name).exists()
-    if not info_exists:
-        info_data = {}
-        info_data['name'] = md.hexdigest()
-        info_data['count'] = count
-        info_data['pages'] = page
-        Info.insert(info_data).execute()
 
 
 def get_one_page_urls(begin):
@@ -107,4 +98,3 @@ def get_one_page_urls(begin):
 for i in range(page):
     begin = i * page_size
     get_one_page_urls(begin)
-    Info.update(grabCount=begin + page_size, count=count).where(Info.name == wx_name).execute()
