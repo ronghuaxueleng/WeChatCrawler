@@ -22,12 +22,12 @@ user_agent_list = [
 
 # 目标url
 url = "https://mp.weixin.qq.com/cgi-bin/appmsg"
-cookie = "appmsglist_action_3276594181=card; RK=OXF5VYXQSL; ptcz=d6aef6ae7d898679277fd206899c3f75b7c80941f26c87542276429261ff663f; pgv_pvid=9003241064; pac_uid=0_a7bab435a742a; fqm_pvqid=e87916b8-69c6-41e0-825a-3b8a0a745881; tvfe_boss_uuid=2e57caf825c92ff5; logTrackKey=6f9ec61f270a4d0b9e98bc527a7b3978; ua_id=nfHarAHBLwHm3paLAAAAAFkwASuGykNHC4Kh0eFjuTc=; wxuin=89142924142371; mm_lang=zh_CN; ptui_loginuin=353752092; iip=0; rand_info=CAESIEhGI512xtOZVQwNSJccgU82X/cKJdveS1+sZMPL9Bl7; slave_bizuin=3276594181; data_bizuin=3276594181; bizuin=3276594181; data_ticket=fc9mDx01ccGuc2+bW9J29B3qBMc4IlDcN7m5DUqfHbrKaI98wihDKDCY7/tg21FM; slave_sid=eTZBa0xFRDR5dm9fRTNoX3l3dENpVXM0ek53ZzJiY0N0NzM2ekdDeGlyWWVFSnVUZVNqcFZ3SnlJaGQ1Q05saEdTc3lOUTZQWm9PZTZRUmNEc2lfZWNXOXM4bDhFVlloeWN0enFXTmVudDVyRmxzdENOaHduN0RPdGFrTUdjS0hFejBlRHBHNGJmTXhBV3dW; slave_user=gh_d8d2bdeb345c; xid=edcd0084f040a677b762dcaac80625a2; _clck=3276594181|1|fge|0; _clsk=1rb9cq3|1698978151904|5|1|mp.weixin.qq.com/weheat-agent/payload/record"
+cookie = "pgv_pvid=2190759718; RK=vXFxAYXYQr; ptcz=829e7a36d4bf9a051959208a5f52ce887ea0239ef7ede4a9ae15855bef809123; user_device_id=bca653d65ade48cf959a52b7db240333; user_device_id_timestamp=1698489332321; ua_id=SljbCRQJgkLP2CngAAAAALqYIWrtJEwt4wO30eDxYZs=; wxuin=99014392727474; uuid=63a2d9bec38c2cdf536530950cf55ce3; _clck=1mo4cpf|1|fge|0; rand_info=CAESIIOI5EydDW6mDQJT49mlG8NuBWAG1mUsC3afMebb94dQ; slave_bizuin=3276594181; data_bizuin=3276594181; bizuin=3276594181; data_ticket=RwDbSefFNfoHFXyolVQJbLeAl640pWgeSX7l6Chh8tNCN/vExNwRaNSxAQxAkaqd; slave_sid=d0FuTzU1SjRsVF9wMTlaTkxSM2dwZlVSREJabEQ3MF91YVJXU1RtY2pQSk41cmN3d2pTcldpbnpHY1BEamtwUHdDaEt1UVdmM3duMHVjcUs4T1B6SnVvQUhReEFGNG84THZuaHljamVubXlNYkxJS2VKZ1Q0eDN0dVFmdEh0VFR4NGJUSHROemVjb2I0WEtB; slave_user=gh_d8d2bdeb345c; xid=a3ea56ea1d5f599dcf3d8fc9d04c4277; mm_lang=zh_CN;"
 
 # 使用Cookie，跳过登陆操作
 
 data = {
-    "token": "814717580",
+    "token": "1904460733",
     "lang": "zh_CN",
     "f": "json",
     "ajax": "1",
@@ -49,11 +49,16 @@ md = hashlib.md5()
 md.update(nickname.encode('utf-8'))
 wx_name = md.hexdigest()  # 公众号名称
 page_size = 4
+articleCount = Article.select().where(Article.nickname == nickname).count()
+print(f"已抓取的公众号文章总条数：{articleCount}")
+has_pages = int(math.ceil(articleCount / page_size))
 content_json = requests.get(url, headers=headers, params=data).json()
 count = int(content_json["app_msg_cnt"])
 print(f"公众号文章总条数：{count}")
-page = int(math.ceil(count / page_size))
-print(f"公众号文章总页数：{page}")
+actual_count = count - articleCount
+print(f"要抓取的公众号文章总条数：{actual_count}")
+page = int(math.ceil(actual_count / page_size))
+print(f"要抓取的公众号文章总页数：{page}")
 
 
 def get_one_page_urls(begin):
@@ -95,6 +100,6 @@ def get_one_page_urls(begin):
         print(e)
 
 
-for i in range(page):
+for i in range(has_pages, page):
     begin = i * page_size
     get_one_page_urls(begin)
