@@ -6,7 +6,6 @@ import os
 import re
 import sys
 
-import pandas as pd
 import requests
 
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='gb18030')
