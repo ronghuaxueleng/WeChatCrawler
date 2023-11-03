@@ -9,8 +9,6 @@ import requests
 from db import Article, Image
 
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='gb18030')
-url_file = "url1.csv"
-name = ['title', 'link', 'create_time']
 
 
 def save_image_urls():
@@ -64,8 +62,10 @@ def save_image(image_src):
 
 if __name__ == '__main__':
     save_image_urls()
-    # with open('data.json', 'r', encoding='UTF-8') as f:
-    #     os.makedirs('img', exist_ok=True)
-    #     data_list = json.load(f)
-    #     for image_src in data_list:
-    #         save_image(image_src)
+    images = Image.select().where(Image.grabState != 1).execute()
+    if len(images) > 0:
+        os.makedirs('img', exist_ok=True)
+        for image in images:
+            image_src = image.image_url
+            save_image(image_src)
+            image.update(grabState=1).execute()
