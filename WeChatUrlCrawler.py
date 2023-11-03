@@ -102,7 +102,6 @@ def get_one_page_urls(begin):
             time.sleep(sleep_seconds)
     except Exception as e:
         print(e)
-        print(f"重试，begin={begin}")
 
 
 for i in range(page):
