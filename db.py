@@ -40,8 +40,6 @@ class Info(Model):
     count = IntegerField(default=0, null=False)  # 文章总数
     pages = IntegerField(default=0, null=False)  # 文章总页数
     grabCount = IntegerField(default=0, null=False)  # 抓取条数
-    createdTime = DateTimeField(default=datetime.datetime.now)
-    timestamp = DateTimeField(null=True, default=datetime.datetime.now)
 
     class Meta:
         database = db
