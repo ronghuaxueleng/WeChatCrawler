@@ -108,4 +108,4 @@ def get_one_page_urls(begin):
 for i in range(page):
     begin = i * page_size
     get_one_page_urls(begin)
-    Info.update(grabCount=begin + page_size).where(Info.name == wx_name).execute()
+    Info.update(grabCount=begin + page_size, count=count).where(Info.name == wx_name).execute()
