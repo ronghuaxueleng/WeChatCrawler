@@ -54,7 +54,7 @@ url_file = "url.csv"
 name = ['title', 'link', 'create_time']
 
 
-def get_url(begin, content_list=None):
+def get_one_page_urls(begin, content_list=None):
     if content_list is None:
         content_list = []
     data["begin"] = begin
@@ -96,11 +96,10 @@ def get_url(begin, content_list=None):
     except Exception as e:
         print(e)
         print(f"重试，begin={begin}")
-        get_url(begin, content_list)
 
 
 for i in range(page):
-    get_url(i * 5, content_list)
+    get_one_page_urls(i * 5, content_list)
 
 test = pd.DataFrame(columns=name, data=content_list)
 test.to_csv("url.csv", mode='a', encoding='utf-8')
