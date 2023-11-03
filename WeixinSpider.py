@@ -74,16 +74,14 @@ class WeixinSpider:
 
             else:
                 html = html_str.replace("\n", "")
-            sql = """INSERT INTO weixin_table(title,url,other,html,create_time,type_id)
-                VALUES ({},{},{},{},{},{},{},{})""".format('"' + title + '"', '"' + url + '"', '"' + other + '"',
-                                                           "'" + html + "'", create_time, 1)
+            sql = f"INSERT INTO weixin_table(title,url,other,html,create_time,type_id) VALUES ({title},{url},{other},{html},{create_time},{1})"
             try:
                 # 执行sql语句
                 cursor.execute(sql)
                 # 提交到数据库执行
                 db.commit()
             except:
-                print("第" + num + "条数据插入失败")
+                print(f"第{num}条数据插入失败")
                 # 如果发生错误则回滚
                 db.rollback()
 
