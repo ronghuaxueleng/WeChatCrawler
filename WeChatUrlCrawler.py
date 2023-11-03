@@ -1,4 +1,6 @@
 # -*- coding: UTF-8 -*-
+import os
+
 import requests
 import time
 import pandas as pd
@@ -36,20 +38,26 @@ data = {
     "type": "9",
 }
 headers = {
-        "Cookie": cookie,
-        "User-Agent": "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.75 Mobile Safari/537.36",
+    "Cookie": cookie,
+    "User-Agent": "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.75 Mobile Safari/537.36",
 
-    }
+}
 content_json = requests.get(url, headers=headers, params=data).json()
 count = int(content_json["app_msg_cnt"])
-print(count)
+print(f"文章总条数：{count}")
 page = int(math.ceil(count / 5))
-print(page)
+print(f"文章总页数：{page}")
 content_list = []
 # 功能：爬取IP存入ip_list列表
 
-for i in range(page):
-    data["begin"] = i * 5
+url_file = "url.csv"
+name = ['title', 'link', 'create_time']
+
+
+def get_url(begin, content_list=None):
+    if content_list is None:
+        content_list = []
+    data["begin"] = begin
     user_agent = random.choice(user_agent_list)
     headers = {
         "Cookie": cookie,
@@ -59,29 +67,41 @@ for i in range(page):
     ip_headers = {
         'User-Agent': user_agent
     }
-    # 使用get方法进行提交
-    content_json = requests.get(url, headers=headers, params=data).json()
-    # 返回了一个json，里面是每一页的数据
-    for item in content_json["app_msg_list"]:
-        # 提取每页文章的标题及对应的url
-        items = []
-        items.append(item["title"])
-        items.append(item["link"])
-        t = time.localtime(item["create_time"])
-        items.append(time.strftime("%Y-%m-%d %H:%M:%S", t))
-        content_list.append(items)
-    print(i)
-    if (i > 0) and (i % 10 == 0):
-        name = ['title', 'link', 'create_time']
-        test = pd.DataFrame(columns=name, data=content_list)
-        test.to_csv("url.csv", mode='a', encoding='utf-8')
-        print("第" + str(i) + "次保存成功")
-        content_list = []
-        time.sleep(random.randint(60,90))
-    else:
-        time.sleep(random.randint(15,25))
+    try:
+        # 使用get方法进行提交
+        content_json = requests.get(url, headers=headers, params=data).json()
+        # 返回了一个json，里面是每一页的数据
+        for item in content_json["app_msg_list"]:
+            # 提取每页文章的标题及对应的url
+            items = []
+            items.append(item["title"])
+            items.append(item["link"])
+            t = time.localtime(item["create_time"])
+            items.append(time.strftime("%Y-%m-%d %H:%M:%S", t))
+            content_list.append(items)
+        print(f"第{i}页爬取完成")
+        if (i > 0) and (i % 10 == 0):
+            test = pd.DataFrame(columns=name, data=content_list)
+            test.to_csv(url_file, mode='a', encoding='utf-8', index=False, index_label=False,
+                        header=(not os.path.exists(url_file)))
+            print("第" + str(i) + "次保存成功")
+            content_list = []
+            sleep_seconds = random.randint(60, 90)
+            print(f"等待{sleep_seconds}秒")
+            time.sleep(sleep_seconds)
+        else:
+            sleep_seconds = random.randint(15, 25)
+            print(f"等待{sleep_seconds}秒")
+            time.sleep(sleep_seconds)
+    except Exception as e:
+        print(e)
+        print(f"重试，begin={begin}")
+        get_url(begin, content_list)
 
-name = ['title', 'link', 'create_time']
+
+for i in range(page):
+    get_url(i * 5, content_list)
+
 test = pd.DataFrame(columns=name, data=content_list)
 test.to_csv("url.csv", mode='a', encoding='utf-8')
 print("最后一次保存成功")
