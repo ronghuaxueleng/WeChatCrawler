@@ -22,12 +22,12 @@ user_agent_list = [
 
 # 目标url
 url = "https://mp.weixin.qq.com/cgi-bin/appmsg"
-cookie = "pgv_pvid=2190759718; RK=vXFxAYXYQr; ptcz=829e7a36d4bf9a051959208a5f52ce887ea0239ef7ede4a9ae15855bef809123; user_device_id=bca653d65ade48cf959a52b7db240333; user_device_id_timestamp=1698489332321; ua_id=SljbCRQJgkLP2CngAAAAALqYIWrtJEwt4wO30eDxYZs=; wxuin=99014392727474; uuid=63a2d9bec38c2cdf536530950cf55ce3; _clck=1mo4cpf|1|fge|0; rand_info=CAESIIOI5EydDW6mDQJT49mlG8NuBWAG1mUsC3afMebb94dQ; slave_bizuin=3276594181; data_bizuin=3276594181; bizuin=3276594181; data_ticket=RwDbSefFNfoHFXyolVQJbLeAl640pWgeSX7l6Chh8tNCN/vExNwRaNSxAQxAkaqd; slave_sid=d0FuTzU1SjRsVF9wMTlaTkxSM2dwZlVSREJabEQ3MF91YVJXU1RtY2pQSk41cmN3d2pTcldpbnpHY1BEamtwUHdDaEt1UVdmM3duMHVjcUs4T1B6SnVvQUhReEFGNG84THZuaHljamVubXlNYkxJS2VKZ1Q0eDN0dVFmdEh0VFR4NGJUSHROemVjb2I0WEtB; slave_user=gh_d8d2bdeb345c; xid=a3ea56ea1d5f599dcf3d8fc9d04c4277; mm_lang=zh_CN;"
+cookie = "RK=OXF5VYXQSL; ptcz=d6aef6ae7d898679277fd206899c3f75b7c80941f26c87542276429261ff663f; pgv_pvid=9003241064; pac_uid=0_a7bab435a742a; fqm_pvqid=e87916b8-69c6-41e0-825a-3b8a0a745881; tvfe_boss_uuid=2e57caf825c92ff5; ua_id=nfHarAHBLwHm3paLAAAAAFkwASuGykNHC4Kh0eFjuTc=; wxuin=89142924142371; mm_lang=zh_CN; iip=0; _qimei_uuid42=17b0710381e1008a71172fc3b167065760f1c16a35; _qimei_fingerprint=533bd04cd49b52e5249a3f4895339de3; _qimei_q36=; _qimei_h38=21de8c7171172fc3b167065702000001e17b07; suid=ek168846137208123029; uuid=1ab7faa580f44235d657b58f1dd4c13b; _clck=3276594181|1|fnl|0; rand_info=CAESIAfusXEBAzXF/5fIQWQhcbrUGlOMqoYCdhE6ORECwFWx; slave_bizuin=3904718188; data_bizuin=3904718188; bizuin=3904718188; data_ticket=MVyW7vB05VHNKYQea0C3ZDiCmXuLBMs5FvJeqo4jjaycJhhdndK03HP//xpYai+o; slave_sid=VzVMb282MEtTS01BSFYxcF9FSFBKMnBodkxDM0UyQXBSejVXbEV2WVBJa2JmamJpWFN2NUxnMzJNamNjMWJRR2xxUDk5YTNuTDd5UW9JYndCNDlGODgxTWQxY1ZiYkE2bGFRVldhQURiU3JIWFNGeXJ6dkc3UGw5SkVaSFNrMzBjb3BRNVZNR2dmb3dnaFFG; slave_user=gh_59f4fe89993d; xid=4d32a67ffee1716ef049770b04973db6; _clsk=ap3v9j|1721354774631|2|1|mp.weixin.qq.com/weheat-agent/payload/record"
 
 # 使用Cookie，跳过登陆操作
 
 data = {
-    "token": "1904460733",
+    "token": "1763065399",
     "lang": "zh_CN",
     "f": "json",
     "ajax": "1",
@@ -36,7 +36,7 @@ data = {
     "count": "5",
     "query": "",
     "need_author_name": "1",
-    "fakeid": "MzAwNTc0Mzc2Ng==",
+    "fakeid": "MzU1ODc3ODkwNA%3D%3D",
     "type": "9",
 }
 headers = {
